@@ -11,19 +11,12 @@ Feel free to ask if any question.
 If you use this toolbox in your research and find it useful, please cite SGW using the following bibtex reference:
 
 ```
-@ARTICLE{vay2019sgw,
-       author = {{Vayer}, Titouan and {Flamary}, R{\'e}mi and {Tavenard}, Romain and
-         {Chapel}, Laetitia and {Courty}, Nicolas},
-        title = "{Sliced Gromov-Wasserstein}",
-      journal = {arXiv e-prints},
-     keywords = {Statistics - Machine Learning, Computer Science - Machine Learning},
-         year = "2019",
-        month = "May",
-          eid = {arXiv:1905.10124},
-        pages = {arXiv:1905.10124},
-archivePrefix = {arXiv},
-       eprint = {1905.10124},
- primaryClass = {stat.ML}
+@incollection{vay2019sgw,
+title = {Sliced Gromov-Wasserstein},
+author = {{Vayer}, Titouan and {Flamary}, R{\'e}mi and {Tavenard}, Romain and
+ {Chapel}, Laetitia and {Courty}, Nicolas},
+booktitle = {Advances in Neural Information Processing Systems 32},
+year = {2019}
 }
 ```
 
