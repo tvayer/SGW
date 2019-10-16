@@ -1,5 +1,5 @@
 
-# FGW
+# SGW
 
 Python3 implementation of the paper [Sliced Gromov-Wasserstein
 ](https://arxiv.org/abs/1905.10124) (NeurIPS 2019)
@@ -43,18 +43,18 @@ For examples with RISGW:
 * SGW function both in CPU and GPU (with Pytorch):
 
 <p align="center">
-  <img src="https://github.com/tvayer/SGW/blob/master/sgw.png" width="340" >
+  <img src="https://github.com/tvayer/SGW/blob/master/sgw.png" width="400" >
 </p>
 
 * Entropic Gromov-Wasserstein in Pytorch.
 
-* Runtimes comparaison with Gromov-Wasserstein of [POT](https://github.com/rflamary/POT), Entropic Gromov-Wasserstein, e.g to calculate the runtimes:
+* Runtimes comparaison with Gromov-Wasserstein of [POT](https://github.com/rflamary/POT), Entropic Gromov-Wasserstein, e.g to calculate all runtimes (in expe_paper folder):
 
 ```
 python3 runtime.py -p '../res' -ln 200 500 1000  -pr 10 20
 ```
 
-To plot the results e.g:
+To plot the results (in expe_paper folder):
 
 ```
 python plot_runtimes.py -p '../res/runtime_2019_10_16_14_26_32/'
@@ -63,7 +63,7 @@ python plot_runtimes.py -p '../res/runtime_2019_10_16_14_26_32/'
 * A demo notebook:
 	- [sgw_example.ipynb](sgw_example.ipynb): SGW between random measures and 3D meashes
 
-* An example of optimization on the Stiefel manifold for computing RISGW. This implementation is a CPU implementation using autograd and is not efficient for large scale applications.
+* An example of optimization on the Stiefel manifold for computing RISGW. This implementation is a CPU implementation using autograd and is not efficient for large scale applications (in expe_paper folder): 
 
 ```
 python run_rot_scale.py 

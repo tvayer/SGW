@@ -1,6 +1,0 @@
-it_entro,100
-all_samples,[200, 500]
-proj,[10, 20]
-nitermax,500
-log_dir,../res
-eps,0.001
