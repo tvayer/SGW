@@ -7,6 +7,8 @@ Created on Thu Apr 18 15:53:30 2019
 """
 #%%
 
+import sys
+sys.path.append('../lib')
 from sgw_pytorch import sgw_gpu
 from sgw_numpy import sgw_cpu
 from gw_pytorch import entropic_gw
@@ -101,7 +103,7 @@ def calculate_entropic_gw_gpu(Xs,Xt,device,epsilon=1e-3,max_iter=100):
     return d_entro_gw,ed-st,log_
 
         
-def calculate_gw_cpu(Xs,Xt,numItermax=500,wass=False):
+def calculate_gw_cpu(Xs,Xt,numItermax=500):
     st=time.time()
     C1=ot.dist(Xs,Xs,'sqeuclidean')
     C2=ot.dist(Xt,Xt,'sqeuclidean')
@@ -113,28 +115,34 @@ def calculate_gw_cpu(Xs,Xt,numItermax=500,wass=False):
 
     ed=time.time()
     time_gw=ed-st
-    w_d=0
-    t_w=0
-    if wass:    
-        st=time.time()
-        M=ot.dist(Xs,Xt)
-        w_d=ot.emd(p,q,M)
-        ed=time.time()
-        t_w=ed-st
-    return d_gw,time_gw,converge_gw_pot,w_d,t_w
+
+    return d_gw,time_gw,converge_gw_pot
       
         
-
+#%%
 
 if __name__ == '__main__':
     
+    """ Calculate the runtimes
+    ----------
+    log_dir : path to write the results
+    all_samples : list of number of points
+    nitermax : number of max iter for GW of POT
+    it_entro :  number of iterations for entropic GW
+    proj :  list of number of projections
+    eps :  epsilon parameter for entropic GW
+    Example
+    ----------
+    python runtime.py -p '../res' -ln 200 500  -pr 10 20
+    
+    """ 
+    
     parser = argparse.ArgumentParser(description='Runtime')   
     parser.add_argument('-p','--log_dir',type=str,help='Path to write result',required=True)
-    parser.add_argument('-ln','--all_samples', nargs='+',type=int, help='All L', required=True)
+    parser.add_argument('-ln','--all_samples', nargs='+',type=int, help='Number of points to test', required=True)
     parser.add_argument('-it','--nitermax',nargs='?',default=500,type=int,help='Iter Max GW POT')
-    parser.add_argument('-ite','--it_entro',nargs='?',default=100,type=int,help='Iter Iter entropic gromov')
-
-    parser.add_argument('-pr','--proj',nargs='+',default=50,type=int,help='Number of proj')
+    parser.add_argument('-ite','--it_entro',nargs='?',default=100,type=int,help='Iter entropic gromov')
+    parser.add_argument('-pr','--proj',nargs='+',default=50,type=int,help='Number of projections to test')
     parser.add_argument('-e','--eps',nargs='?',default=0.001,type=float,help='Epsilon for entropic gw')
    
     args = parser.parse_args()
@@ -143,7 +151,6 @@ if __name__ == '__main__':
     projs=args.proj
     epsilon=args.eps
     niterentro=args.it_entro
-    onlyk=args.only_keras
     
     log_dir = utils.create_log_dir(args)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -157,8 +164,6 @@ if __name__ == '__main__':
 
     results['all_gw']=[]
     results['t_all_gw']=[]
-    results['all_w']=[]
-    results['t_a_w']=[]
     results['all_converged']=[]
 
     results['all_entro_gw']=[]
@@ -173,24 +178,18 @@ if __name__ == '__main__':
         results[('all_sgw_numpy',proj)]=[]
         results[('all_log_numpy',proj)]=[]
 
-        results[('t_all_sgw_k',proj)]=[]
-        results[('all_sgw_k',proj)]=[]
-        results[('all_log_k',proj)]=[]
                 
     for n_samples in all_samples:
         Xs,Xt=create_ds(n_samples)
         
-        d_gw,time_gw,converge_gw_pot,d_w,t_w=calculate_gw_cpu(Xs,Xt,numItermax,True)
+        d_gw,time_gw,converge_gw_pot=calculate_gw_cpu(Xs,Xt,numItermax)
         results['all_gw'].append(d_gw)
         results['t_all_gw'].append(time_gw)
-        results['all_w'].append(d_w)
-        results['t_a_w'].append(t_w)
         results['all_converged'].append(converge_gw_pot)
         
-        if not onlyk:
-            d_entro_gw,time_entro_gw,log_=calculate_entropic_gw_gpu(Xs,Xt,device,epsilon,niterentro)
-            results['all_entro_gw'].append(d_entro_gw)
-            results['t_all_entro_gw'].append(time_entro_gw)
+        d_entro_gw,time_entro_gw,log_=calculate_entropic_gw_gpu(Xs,Xt,device,epsilon,niterentro)
+        results['all_entro_gw'].append(d_entro_gw)
+        results['t_all_entro_gw'].append(time_entro_gw)
 
         
         for proj in projs:

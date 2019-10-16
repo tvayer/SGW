@@ -180,7 +180,7 @@ def gromov_1d(xs,xt,tolog=False):
         xt_desc,i_t=torch.sort(xt,dim=0,descending=True)
         l1=_cost(xs2,xt_asc,tolog=tolog)
         l2=_cost(xs2,xt_desc,tolog=tolog)   
-        toreturn=torch.mean(torch.min(l1,l2)) 
+    toreturn=torch.mean(torch.min(l1,l2)) 
     ed=time.time()  
    
     if tolog:
