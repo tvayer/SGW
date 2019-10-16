@@ -24,7 +24,7 @@ def sgw_cpu(xs,xt,nproj=200,tolog=False,P=None):
     nproj : integer
             Number of projections. Ignore if P is not None
     P : numpy array, shape (max(p,q),n_proj)
-        Projection matrix
+        Projection matrix. If None creates a new projection matrix
     tolog : bool
             Wether to return timings or not
     Returns
@@ -39,7 +39,6 @@ def sgw_cpu(xs,xt,nproj=200,tolog=False,P=None):
     Example
     ----------
     import numpy as np
-    import torch
     from sgw_numpy import sgw_cpu
     
     n_samples=300
@@ -74,6 +73,25 @@ def sgw_cpu(xs,xt,nproj=200,tolog=False,P=None):
         return d
 
 def _cost(xsp,xtp,tolog=False):
+    """ Returns the GM cost eq (3) in [1]
+    Parameters
+    ----------
+    xsp : tensor, shape (n, n_proj)
+         1D sorted samples (after finding sigma opt) for each proj in the source
+    xtp : tensor, shape (n, n_proj)
+         1D sorted samples (after finding sigma opt) for each proj in the target
+    tolog : bool
+            Wether to return timings or not
+    Returns
+    -------
+    C : tensor, shape (n_proj,1)
+           Cost for each projection
+    References
+    ----------
+    .. [1] Vayer Titouan, Chapel Laetitia, Flamary R{\'e}mi, Tavenard Romain
+          and Courty Nicolas
+          "Sliced Gromov-Wasserstein"
+    """
     st=time.time()
     allC=[]
     for j in range(xsp.shape[1]):
@@ -117,8 +135,26 @@ def _cost(xsp,xtp,tolog=False):
     
 
 def gromov_1d(xs,xt,tolog=False,fast=True):
-
-        
+    """ Solves the Gromov in 1D (eq (2) in [1] for each proj
+    Parameters
+    ----------
+    xsp : tensor, shape (n, n_proj)
+         1D sorted samples for each proj in the source
+    xtp : tensor, shape (n, n_proj)
+         1D sorted samples for each proj in the target
+    tolog : bool
+            Wether to return timings or not
+    fast: use the O(nlog(n)) cost or not
+    Returns
+    -------
+    toreturn : tensor, shape (n_proj,1)
+           The SGW cost for each proj
+    References
+    ----------
+    .. [1] Vayer Titouan, Chapel Laetitia, Flamary R{\'e}mi, Tavenard Romain
+          and Courty Nicolas
+          "Sliced Gromov-Wasserstein"
+    """  
     if tolog:
         log={}
     
@@ -152,6 +188,31 @@ def gromov_1d(xs,xt,tolog=False,fast=True):
         
 
 def sink_(xs,xt,nproj=200,P=None):
+    """ Sinks the points of the measure in the lowest dimension onto the highest dimension and applies the projections.
+    Only implemented with the 0 padding Delta=Delta_pad operator (see [1])
+    Parameters
+    ----------
+    xs : tensor, shape (n, p)
+         Source samples
+    xt : tensor, shape (n, q)
+         Target samples
+    device :  torch device
+    nproj : integer
+            Number of projections. Ignored if P is not None
+    P : tensor, shape (max(p,q),n_proj)
+        Projection matrix
+    Returns
+    -------
+    xsp : tensor, shape (n,n_proj)
+           Projected source samples 
+    xtp : tensor, shape (n,n_proj)
+           Projected target samples 
+    References
+    ----------
+    .. [1] Vayer Titouan, Chapel Laetitia, Flamary R{\'e}mi, Tavenard Romain
+          and Courty Nicolas
+          "Sliced Gromov-Wasserstein"
+    """  
     dim_d= xs.shape[1]
     dim_p= xt.shape[1]
     

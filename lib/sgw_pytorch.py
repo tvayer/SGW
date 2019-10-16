@@ -13,7 +13,7 @@ class BadShapeError(Exception):
     pass 
 
 def sgw_gpu(xs,xt,device,nproj=200,tolog=False,P=None):
-    """ Returns SGW between xs and xt eq (4) in [1]. Only implemented with the 0 padding Delta
+    """ Returns SGW between xs and xt eq (4) in [1]. Only implemented with the 0 padding operator Delta
     Parameters
     ----------
     xs : tensor, shape (n, p)
@@ -24,7 +24,7 @@ def sgw_gpu(xs,xt,device,nproj=200,tolog=False,P=None):
     nproj : integer
             Number of projections. Ignore if P is not None
     P : tensor, shape (max(p,q),n_proj)
-        Projection matrix
+        Projection matrix. If None creates a new projection matrix
     tolog : bool
             Wether to return timings or not
     Returns
@@ -49,7 +49,7 @@ def sgw_gpu(xs,xt,device,nproj=200,tolog=False,P=None):
     xt=torch.from_numpy(Xt).to(torch.float32)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     P=np.random.randn(2,500)
-    sgw(xs,xt,device,P=torch.from_numpy(P).to(torch.float32),fast=True)
+    sgw_gpu(xs,xt,device,P=torch.from_numpy(P).to(torch.float32))
     """    
     if tolog:
         log={}
@@ -194,6 +194,31 @@ def gromov_1d(xs,xt,tolog=False):
         return toreturn
             
 def sink_(xs,xt,device,nproj=200,P=None): #Delta operator (here just padding)
+    """ Sinks the points of the measure in the lowest dimension onto the highest dimension and applies the projections.
+    Only implemented with the 0 padding Delta=Delta_pad operator (see [1])
+    Parameters
+    ----------
+    xs : tensor, shape (n, p)
+         Source samples
+    xt : tensor, shape (n, q)
+         Target samples
+    device :  torch device
+    nproj : integer
+            Number of projections. Ignored if P is not None
+    P : tensor, shape (max(p,q),n_proj)
+        Projection matrix
+    Returns
+    -------
+    xsp : tensor, shape (n,n_proj)
+           Projected source samples 
+    xtp : tensor, shape (n,n_proj)
+           Projected target samples 
+    References
+    ----------
+    .. [1] Vayer Titouan, Chapel Laetitia, Flamary R{\'e}mi, Tavenard Romain
+          and Courty Nicolas
+          "Sliced Gromov-Wasserstein"
+    """  
     dim_d= xs.shape[1]
     dim_p= xt.shape[1]
     
