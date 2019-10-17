@@ -35,9 +35,8 @@ For examples with RISGW:
 
 * SGW function both in CPU and GPU (with Pytorch):
 
-<p align="center">
-  <img src="https://github.com/tvayer/SGW/blob/master/sgw.png" width="600" >
-</p>
+![](horses.gif)
+
 
 * Entropic Gromov-Wasserstein in Pytorch.
 
