@@ -22,16 +22,16 @@ year = {2019}
 
 ### Prerequisites
 
-* Numpy (>=1.11)
-* Matplotlib (>=1.5)
-* Pytorch (>= 1.0.1)
+* Numpy (>= 1.11)
+* Matplotlib (>= 1.5)
+* Pytorch (>= 1.1.0)
 * For Optimal transport [Python Optimal Transport](https://pot.readthedocs.io/en/stable/) POT (>=0.5.1)
 
 For examples with RISGW:
-* [Pymanopt](https://pymanopt.github.io)
+* Python (>= 3.6)
+* [geoopt](https://github.com/geoopt/geoopt)
 
 ### What is included ?
-
 
 * SGW function both in CPU and GPU (with Pytorch):
 
@@ -52,17 +52,13 @@ To plot the results (in expe_paper folder):
 python plot_runtimes.py -p '../res/runtime_2019_10_16_14_26_32/'
 ```
 
-* A demo notebook:
+* Rotational Invariant SGW (RISGW) in Pytorch using geoopt. 
+
+* Demo notebooks:
 	- [sgw_example.ipynb](sgw_example.ipynb): SGW between random measures and 3D meashes
-
-* An example of optimization on the Stiefel manifold for computing RISGW. This implementation is a CPU implementation using autograd and is not efficient for large scale applications (in expe_paper folder): 
-
-```
-python run_rot_scale.py 
-```
+	- [risgw_example.ipynb](risgw_example.ipynb): RISGW between random measures and on spiral dataset
 
 ### What will be added ?
-* Some works on RISGW for larger applications. 
 * Integration of SGW in the POT library [1]
 
 

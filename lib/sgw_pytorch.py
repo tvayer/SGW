@@ -75,6 +75,9 @@ def sgw_gpu(xs,xt,device,nproj=200,tolog=False,P=None):
     else:
         return d
 
+        
+        
+
 def _cost(xsp,xtp,tolog=False):   
     """ Returns the GM cost eq (3) in [1]
     Parameters
