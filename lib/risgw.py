@@ -10,9 +10,10 @@ import geoopt
 import numpy as np
 import torch.nn.functional as F
 from sgw_pytorch import sgw_gpu
+import time
 
 def risgw_gpu(xs,xt,device,nproj=200,P=None,lr=0.001,
-              max_iter=100, verbose=False, step_verbose=10):
+              max_iter=100, verbose=False, step_verbose=10, tolog=False, retain_graph=False):
     """ Returns RISGW between xs and xt eq (5) in [1]. 
     The dimension of xs must be less or equal than xt (ie p<=q)
     Parameters
@@ -59,6 +60,9 @@ def risgw_gpu(xs,xt,device,nproj=200,P=None,lr=0.001,
     
     optimizer = geoopt.optim.RiemannianAdam(affine_map.parameters(), lr=lr)
     
+    log={}
+    st=time.time()
+    
 
     running_loss = 0.0
     for i in range(max_iter):
@@ -66,18 +70,23 @@ def risgw_gpu(xs,xt,device,nproj=200,P=None,lr=0.001,
         optimizer.zero_grad()
 
         # forward + backward + optimize
-        loss = sgw_gpu(xs, affine_map(xt),device=device,nproj=nproj,tolog=False,P=P)
-        loss.backward()
+        loss = sgw_gpu(affine_map(xs), xt,device=device,nproj=nproj,tolog=False,P=P)
+        loss.backward(retain_graph=retain_graph)
         optimizer.step()
 
         # print statistics
-        running_loss = loss
+        running_loss = loss.item()
         if verbose and (i + 1) % step_verbose == 0:
             print('Iteration {}: sgw loss: {:.3f}'.format(i + 1,
-                                                               running_loss.item()))
+                                                               running_loss))
+    ed=time.time()
+    if tolog:
+        log['time']=ed-st
+        log['Delta']=affine_map.weight.data
+        return running_loss,log
+    else:
+        return running_loss
     
-    return running_loss
-
 
 def stiefel_uniform_(tensor):  # TODO: make things better
     with torch.no_grad():
@@ -85,7 +94,7 @@ def stiefel_uniform_(tensor):  # TODO: make things better
         return tensor
 
 class StiefelLinear(torch.nn.Module):
-    def __init__(self, in_features, out_features,device, bias=True):
+    def __init__(self, in_features, out_features,device, bias=False):
         super(StiefelLinear, self).__init__()
         self.in_features = in_features
         self.out_features = out_features
