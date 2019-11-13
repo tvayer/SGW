@@ -11,13 +11,17 @@ Feel free to ask if any question.
 If you use this toolbox in your research and find it useful, please cite SGW using the following bibtex reference:
 
 ```
-@incollection{vay2019sgw,
+@incollection{vay_sgw_2019,
 title = {Sliced Gromov-Wasserstein},
-author = {{Vayer}, Titouan and {Flamary}, R{\'e}mi and {Tavenard}, Romain and
- {Chapel}, Laetitia and {Courty}, Nicolas},
+author = {Titouan, Vayer and Flamary, R\'{e}mi and Courty, Nicolas and Tavenard, Romain and Chapel, Laetitia},
 booktitle = {Advances in Neural Information Processing Systems 32},
-year = {2019}
+editor = {H. Wallach and H. Larochelle and A. Beygelzimer and F. d\textquotesingle Alch\'{e}-Buc and E. Fox and R. Garnett},
+pages = {14726--14736},
+year = {2019},
+publisher = {Curran Associates, Inc.},
+url = {http://papers.nips.cc/paper/9615-sliced-gromov-wasserstein.pdf}
 }
+
 ```
 
 ### Prerequisites
