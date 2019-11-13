@@ -21,7 +21,6 @@ year = {2019},
 publisher = {Curran Associates, Inc.},
 url = {http://papers.nips.cc/paper/9615-sliced-gromov-wasserstein.pdf}
 }
-
 ```
 
 ### Prerequisites
